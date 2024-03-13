@@ -28,6 +28,7 @@ def main():
              
 
     def handle_client(c):
+            foo = "$-1\r\n"
             while(True): # Keep the connection open and respond to PINGs with PONGs
                 data = c.recv(1024)
                 if not data:
@@ -43,6 +44,14 @@ def main():
                 elif commands[0].lower() == "echo" and len(commands) > 1:
                          response_data = f"+{commands[1]}\r\n".encode()
                          c.sendall(response_data)
+                elif commands[0].lower() == "set":
+                    response_data = b"+OK\r\n"
+                    foo = commands[2]
+                    print(foo)
+                    c.sendall(response_data)
+                elif commands[0].lower() == "get":
+                    response_data = f"${len(foo)}\r\n{foo}\r\n".encode()
+                    c.sendall(response_data)
             c.close()
     
     while True:
